@@ -59,7 +59,6 @@ A Django-based healthcare AI platform for patient management, medical assistance
 - `config/` — Django settings and URL configuration
 - `templates/` — HTML templates for app views
 - `static/` — Static assets
-- `media/` — Uploaded media files
 - `requirements.txt` — Python package dependencies
 - `README.md` — Project overview and setup instructions
 
