@@ -1,0 +1,33 @@
+from django.contrib import admin
+from django.urls import path, include
+
+
+urlpatterns = [
+
+    path(
+        "admin/",
+        admin.site.urls
+    ),
+
+    path(
+        "",
+        include(
+            "apps.dashboard.urls"
+        )
+    ),
+
+    path(
+        "auth/",
+        include(
+            "apps.accounts.urls"
+        )
+    ),
+
+    path(
+        "prediction/",
+        include(
+            "apps.prediction.urls"
+        )
+    ),
+
+]

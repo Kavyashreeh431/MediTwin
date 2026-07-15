@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>
+
+    Health Summary
+
+</h1>
+
+<div class="card">
+
+    Age:
+    {{ profile.age }}
+
+</div>
+
+<div class="card">
+
+    BMI:
+    {{ profile.bmi|floatformat:1 }}
+
+</div>
+
+<div class="card">
+
+    BMI Status:
+    {{ bmi_status }}
+
+</div>
+
+<div class="card">
+
+    Risk:
+    {{ risk }}
+
+</div>
+
+<div class="card">
+
+    <h3>
+
+        Why this result?
+
+    </h3>
+
+    <ul>
+
+        {% for item in explanations %}
+
+        <li>
+
+            {{ item }}
+
+        </li>
+
+        {% empty %}
+
+        <li>
+
+            No major indicators
+
+        </li>
+
+        {% endfor %}
+
+        <hr>
+
+        <h3>Health Analytics</h3>
+
+        <p>
+            Health Score:
+            <strong>
+                {{ health_score }}/100
+            </strong>
+        </p>
+
+        <div style="
+background:#ddd;
+width:100%;
+height:20px;
+border-radius:10px;
+">
+
+            <div style="
+background:#28a745;
+width:{{ health_score }}%;
+height:20px;
+border-radius:10px;
+">
+
+            </div>
+
+        </div>
+
+
+        <br>
+
+        <p>
+
+            Prediction Confidence:
+
+            <strong>
+
+                {{ prediction_confidence }}%
+
+            </strong>
+
+        </p>
+    </ul>
+
+</div>
+<div class="card">
+
+    Glucose:
+    {{ profile.glucose }}
+
+</div>
+
+<div class="card">
+
+    Sleep:
+    {{ profile.sleep_hours }}
+
+    hours
+
+</div>
+
+{% endblock %}
