@@ -1,115 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-<title>Healthcare AI</title>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#f5f7fb;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTwin</title>
+    <style>
+        :root {
+    /* Exact Panel-Matched Organic & Calm Theme Palette */
+    --bg-primary: #e1ebdf;       /* The soft, muted light-green background behind the cards */
+    --sidebar-bg: #b2c9b2;       /* The exact soothing sage green for the sidebar panel */
+    --sidebar-hover: #a1b8a1;    /* Slightly deeper tone for elegant, non-jarring hovers */
+    --sidebar-active: #8fa68f;   /* Settled active state color */
+    --text-light: #ffffff;
+    --text-dark: #202b24;        /* Dark forest charcoal for crisp medical-grade typography readability */
+    --text-muted: #556358;       /* Muted grey-green for subtitles and notes */
+    --card-bg: #ffffff;          /* Pristine white for the floating layout cards */
+    --accent-green: #bcd3c4;     /* Perfect match for incoming assistant/bot chat bubbles */
+    --accent-peach: #e2ab8a;     /* Perfect match for outgoing user chat bubbles */
+    --chat-bg: #fdf0e6;           /* The soft, warm ivory peach canvas inside the chat window */
+    --border-radius: 16px;       /* Slightly more rounded for that approachable modern web UI feel */
+    --transition: all 0.25s ease;
 }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
 
-.sidebar{
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            background: var(--sidebar-bg);
+            color: var(--text-light);
+            padding: 30px 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 15px rgba(46, 90, 68, 0.05);
+        }
 
-width:260px;
+        .sidebar h2 {
+            margin: 0 0 40px 12px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-height:100vh;
+        /* Leaf/Medical cross inspired dot indicator */
+        .sidebar h2::before {
+            content: '';
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #496558;
+            border-radius: 50%;
+        }
 
-position:fixed;
+        .sidebar nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
 
-background:#0b4f6c;
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
 
-color:white;
+        .sidebar a:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-light);
+            transform: translateX(4px);
+        }
 
-padding:20px;
+        /* Active state style fallback if you use a class later */
+        .sidebar a.active {
+            background: var(--sidebar-active);
+            color: var(--text-light);
+            font-weight: 600;
+        }
 
-}
+        .sidebar a i { width: 24px; margin-right: 8px; text-align: center; }
+        .sidebar .logout-link {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            color: #f8d7da;
+        }
 
-.sidebar h2{
-margin-bottom:40px;
-}
+        .sidebar .logout-link:hover {
+            background: #842029;
+            color: #ffffff;
+        }
 
-.sidebar a{
+        /* Main Content Layout */
+        .content {
+            margin-left: 260px;
+            padding: 40px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-display:block;
+        /* Card components styling inside your blocks */
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            margin-bottom: 24px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(46, 90, 68, 0.08);
+            box-shadow: 0 4px 20px rgba(46, 90, 68, 0.03);
+            transition: var(--transition);
+        }
 
-padding:12px;
-
-margin:10px 0;
-
-text-decoration:none;
-
-color:white;
-
-border-radius:8px;
-
-}
-
-.sidebar a:hover{
-
-background:#2b6b87;
-
-}
-
-.content{
-
-margin-left:280px;
-
-padding:40px;
-
-}
-
-.card{
-
-background:white;
-
-padding:25px;
-
-margin-bottom:20px;
-
-border-radius:12px;
-
-box-shadow:0 0 10px rgba(0,0,0,.08);
-
-}
-
-</style>
-
+        .card:hover {
+            box-shadow: 0 6px 24px rgba(46, 90, 68, 0.06);
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="sidebar">
-
-<h2>Healthcare AI</h2>
-
-<a href="/">Dashboard</a>
-
-<a href="#">Prediction</a>
-
-<a href="#">Remedy Advisor</a>
-
-<a href="#">Reports</a>
-
-<a href="#">Prescription</a>
-
-<a href="#">Assistant</a>
-
-<a href="/auth/logout/">Logout</a>
-
+    <h2 style="color: black;">MediTwin AI</h2>
+    <nav>
+    <a style="color: black;" href="{% url 'dashboard' %}"><i class="fa-solid fa-table-columns" style="color: black;"></i>    Dashboard</a>
+    <a style="color: black;" href="{% url 'health_profile' %}"><i class="bi bi-heart-pulse-fill" style="color: black;"></i> Health Predictor</a>
+    <a style="color: black;" href="{% url 'remedy' %}"><i class="fa-solid fa-pills" style="color: black;"></i> Remedy Advisor</a>
+    <a style="color: black;" href="{% url 'report' %}"><i class="fa-solid fa-file-medical" style="color: black;"></i> Report Summarizer</a>
+    <a style="color: black;" href="{% url 'prescription' %}"><i class="fa-solid fa-prescription-bottle-medical" style="color: black;"></i> Prescription Analyzer</a>
+    <a style="color: black;" href="{% url 'assistant' %}"><i class="fa-solid fa-comment-medical" style="color: black;"></i> Assistant</a><hr>
+    <a style="color: black;" href="{% url 'logout' %}" style="margin-top: auto;"><i class="fa-solid fa-right-from-bracket" style="color: black;"></i> Logout</a>
+</nav>
 </div>
 
 <div class="content">
-
-{% block content %}
-
-{% endblock %}
-
+    {% block content %}
+    {% endblock %}
 </div>
 
 </body>
-
 </html>

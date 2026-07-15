@@ -1,70 +1,686 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+{%load static%}
+<style>
+body {
+        background-image: url("{% static 'images/bg.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+.chart-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 28px;
+    padding: 26px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    height: 100%;
+}
 
-<h1>
+.chart-card h4 {
+    color: #0f172a;
+    font-weight: 850;
+    margin-bottom: 8px;
+}
 
-Welcome to Healthcare AI
+.chart-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
 
-</h1>
+.chart-box {
+    position: relative;
+    height: 320px;
+}
 
-<div class="card">
+.empty-chart {
+    height: 320px;
+    border-radius: 22px;
+    background: rgba(241, 245, 249, 0.75);
+    border: 1px dashed rgba(100, 116, 139, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #64748b;
+    padding: 24px;
+}
+.dashboard-page {
+    min-height: 80vh;
+    padding: 32px;
+    background:
+        radial-gradient(circle at top left, rgba(20,184,166,0.16), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(14,165,233,0.16), transparent 30%),
+        linear-gradient(135deg, #f8fafc, #ecfeff, #f0fdf4);
+}
 
-Personalized Healthcare Prediction
+.user-highlight {
+    background:
+        linear-gradient(135deg, rgba(255,255,255,0.92), rgba(236,254,255,0.82)),
+        radial-gradient(circle at top right, rgba(20,184,166,0.25), transparent 35%);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 34px;
+    padding: 38px;
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.12);
+    backdrop-filter: blur(20px);
+}
 
-<br><br>
+.highlight-badge {
+    display: inline-flex;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(20,184,166,0.13);
+    color: #0f766e;
+    font-weight: 800;
+    font-size: 0.86rem;
+    margin-bottom: 18px;
+}
 
-Coming Soon
+.highlight-title {
+    font-size: 2.5rem;
+    font-weight: 850;
+    letter-spacing: -1.8px;
+    color: #0f172a;
+}
 
+.highlight-text {
+    color: #475569;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.stat-card,
+.module-card,
+.profile-card,
+.factor-card {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.88);
+    border-radius: 26px;
+    padding: 26px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    height: 100%;
+}
+
+.stat-icon,
+.module-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 20px;
+    background: rgba(20,184,166,0.13);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.stat-value {
+    color: #0f172a;
+    font-size: 1.8rem;
+    font-weight: 850;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid rgba(148,163,184,0.22);
+}
+
+.profile-row:last-child {
+    border-bottom: none;
+}
+
+.profile-label {
+    color: #64748b;
+    font-weight: 650;
+}
+
+.profile-value {
+    color: #0f172a;
+    font-weight: 850;
+}
+
+.btn-dashboard {
+    background: #0284c7;
+    color: white;
+    border-radius: 999px;
+    padding: 12px 22px;
+    text-decoration: none;
+    font-weight: 750;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-dashboard:hover {
+    background: #0369a1;
+    color: white;
+}
+
+.btn-soft-dashboard {
+    background: rgba(255,255,255,0.8);
+    color: #0f766e;
+    border: 1px solid rgba(15,118,110,0.18);
+    border-radius: 999px;
+    padding: 12px 22px;
+    text-decoration: none;
+    font-weight: 750;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-soft-dashboard:hover {
+    color: #0f766e;
+    background: white;
+}
+
+.module-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: 0.25s ease;
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.13);
+}
+
+.module-card h5 {
+    color: #0f172a;
+    font-weight: 850;
+    margin-bottom: 8px;
+}
+
+.module-card p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.factor-good {
+    border-left: 5px solid #10b981;
+}
+
+.factor-attention {
+    border-left: 5px solid #f59e0b;
+}
+
+.factor-title {
+    color: #0f172a;
+    font-weight: 850;
+    margin-bottom: 6px;
+}
+
+.factor-text {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+.safety-box {
+    background: rgba(255, 251, 235, 0.92);
+    color: #92400e;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 22px;
+    padding: 18px 22px;
+    font-size: 0.92rem;
+}
+</style>
+
+
+    <div class="user-highlight mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="highlight-badge">
+                    🧬 Personalized MediTwin Highlight
+                </div>
+
+                <h1 class="highlight-title mb-3">
+                    Welcome, {{ request.user.username }}
+                </h1>
+
+                <p class="highlight-text mb-0">
+                    {{ user_highlight_message }}
+                </p>
+            </div>
+            <div class="dashboard-page">
+    {% if health_profile %}
+
+<div class="row g-3 mb-4">
+<!-- 📊 -->
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <h4> <i class="bi bi-clipboard2-data" style="color: #0f7652;"></i>  Your Health Indicators</h4>
+            <p>
+                This graph shows the latest health values entered by the logged-in user.
+            </p>
+
+            <div class="chart-box">
+                <canvas id="healthIndicatorsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <h4><i class="bi bi-search" style="color: #0f7652;"></i> AI Feature Impact</h4>
+            <p>
+                Positive values support better health prediction, while negative values increase risk.
+            </p>
+
+            <div class="chart-box">
+                <canvas id="featureImpactChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="card">
+<!-- <div class="row g-4 mb-4">
 
-Remedy Advisor
+    <div class="col-lg-12">
+        <div class="chart-card">
+            <h4>📄 Report Indicators</h4>
+            <p>
+                This section can display extracted report values such as hemoglobin, WBC, RBC, glucose, cholesterol, and other lab indicators.
+            </p>
 
-<br><br>
+            {% if report_chart_values %}
+                <div class="chart-box">
+                    <canvas id="reportIndicatorsChart"></canvas>
+                </div>
+            {% else %}
+                <div class="empty-chart">
+                    <div>
+                        <div style="font-size:42px;">📄</div>
+                        <h5 class="fw-bold mt-3">No saved report indicators yet</h5>
+                        <p class="mb-0">
+                            Upload and save report values in the Report Summarizer module to display report graphs here.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>-->
+<div class="col-lg-5 text-lg-end">
+                <a href="{% url 'health_profile' %}" class="btn-dashboard me-2 mb-2">
+                    New Health Check
+                </a>
 
-Coming Soon
+                {% if health_profile %}
+                    <a href="{% url 'health_summary' %}" class="btn-soft-dashboard mb-2">
+                        View Full Summary
+                    </a>
+                {% endif %}
+            </div>
+</div> 
+
+{% endif %}
+            
+        </div>
+    </div>
+
+    {% if health_profile %}
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Your Health Score</div>
+                <div class="stat-value">{{ health_score }}/100</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">⚕️</div>
+                <div class="stat-label">Your Risk Level</div>
+                <div class="stat-value">{{ risk }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-label">AI Confidence</div>
+                <div class="stat-value">{{ prediction_confidence }}%</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-5">
+            <div class="profile-card">
+                <h4 class="fw-bold mb-4" style="color:#0f172a;">
+                    <i class="bi bi-person-circle" style="color:#0f766e;"></i> Your Latest Health Profile
+                </h4>
+
+                <div class="profile-row">
+                    <span class="profile-label">Height</span>
+                    <span class="profile-value">{{ health_profile.height }} cm</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">Weight</span>
+                    <span class="profile-value">{{ health_profile.weight }} kg</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">BMI</span>
+                    <span class="profile-value">{{ health_profile.bmi }}</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">BMI Status</span>
+                    <span class="profile-value">{{ bmi_status }}</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">Glucose</span>
+                    <span class="profile-value">{{ health_profile.glucose }} mg/dL</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">Heart Rate</span>
+                    <span class="profile-value">{{ health_profile.heart_rate }} bpm</span>
+                </div>
+
+                <div class="profile-row">
+                    <span class="profile-label">Sleep Duration</span>
+                    <span class="profile-value">{{ health_profile.sleep_hours }} hrs</span>
+                </div>
+
+                {% if health_profile.exercise %}
+                <div class="profile-row">
+                    <span class="profile-label">Exercise</span>
+                    <span class="profile-value">{{ health_profile.exercise }} min/week</span>
+                </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <a href="{% url 'update_health_profile' %}" class="btn-dashboard w-100">
+                        Update My Health Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="profile-card mb-4">
+                <h4 class="fw-bold mb-3" style="color:#0f172a;">
+                    💡 Your Personalized Recommendation
+                </h4>
+
+                <p style="color:#475569; line-height:1.8;">
+                    {{ recommendation }}
+                </p>
+
+                <div class="safety-box mt-4">
+                    <strong>Safety Note:</strong>
+                    This dashboard provides AI-based health awareness only. It is not a medical diagnosis.
+                    Please consult a doctor for medical decisions.
+                </div><br>
+                
+                <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="factor-card factor-attention">
+                        <h5 class="factor-title">⚠️ Needs Attention</h5>
+
+                        {% if attention_factors %}
+                            {% for item in attention_factors %}
+                                <p class="factor-text mb-2">
+                                    <strong>{{ item.feature }}:</strong> {{ item.reason }}
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="factor-text">
+                                No major negative indicator detected.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="factor-card factor-good">
+                        <h5 class="factor-title">✅ Good Indicators</h5>
+
+                        {% if good_factors %}
+                            {% for item in good_factors %}
+                                <p class="factor-text mb-2">
+                                    <strong>{{ item.feature }}:</strong> {{ item.reason }}
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            <p class="factor-text">
+                                Add health data to view positive indicators.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="profile-card mb-4 text-center py-5">
+        <div style="font-size:56px;">🩺</div>
+        <h3 class="fw-bold mt-3" style="color:#0f172a;">
+            No health profile found
+        </h3>
+        <p class="text-muted mb-4">
+            Create your first health profile to view personalized highlights, prediction, health score, and recommendations.
+        </p>
+        <a href="{% url 'health_profile' %}" class="btn-dashboard">
+            Create My Health Profile
+        </a>
+    </div>
+
+    {% endif %}
+
+    <!-- <div class="row g-4">
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'health_profile' %}" class="module-card">
+                <div class="module-icon">🩺</div>
+                <h5>Health Predictor</h5>
+                <p>Enter your health values and get personalized AI-based prediction.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'remedy' %}" class="module-card">
+                <div class="module-icon">🌿</div>
+                <h5>Remedy Advisor</h5>
+                <p>Get safe remedy suggestions for common symptoms using dataset-based logic.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'report' %}" class="module-card">
+                <div class="module-icon">📄</div>
+                <h5>Report Summarizer</h5>
+                <p>Upload reports and convert complex values into simple summaries.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'prescription' %}" class="module-card">
+                <div class="module-icon">💊</div>
+                <h5>Prescription Analyzer</h5>
+                <p>Analyze medicine names, dosage, frequency, purpose, and warnings.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'assistant' %}" class="module-card">
+                <div class="module-icon">🤖</div>
+                <h5>AI Assistant</h5>
+                <p>Ask health-related questions using the local Ollama-powered assistant.</p>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'logout' %}" class="module-card">
+                <div class="module-icon">🚪</div>
+                <h5>Logout</h5>
+                <p>Securely sign out from your MediTwin account.</p>
+            </a>
+        </div> -->
+
+    </div>
 
 </div>
+{{ health_chart_labels|json_script:"health-labels-data" }}
+{{ health_chart_values|json_script:"health-values-data" }}
+{{ feature_chart_labels|json_script:"feature-labels-data" }}
+{{ feature_chart_values|json_script:"feature-values-data" }}
+{{ report_chart_labels|json_script:"report-labels-data" }}
+{{ report_chart_values|json_script:"report-values-data" }}
 
-<div class="card">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-Medical Report Summarizer
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-<br><br>
+    const healthLabels = JSON.parse(document.getElementById("health-labels-data").textContent);
+    const healthValues = JSON.parse(document.getElementById("health-values-data").textContent);
 
-Coming Soon
+    const featureLabels = JSON.parse(document.getElementById("feature-labels-data").textContent);
+    const featureValues = JSON.parse(document.getElementById("feature-values-data").textContent);
 
-</div>
+    const reportLabels = JSON.parse(document.getElementById("report-labels-data").textContent);
+    const reportValues = JSON.parse(document.getElementById("report-values-data").textContent);
 
-<div class="card">
+    const healthCanvas = document.getElementById("healthIndicatorsChart");
 
-Prescription Analyzer
+    if (healthCanvas && healthLabels.length > 0) {
+        new Chart(healthCanvas, {
+            type: "bar",
+            data: {
+                labels: healthLabels,
+                datasets: [{
+                    label: "Latest health value",
+                    data: healthValues,
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    backgroundColor: "rgba(14, 165, 233, 0.65)",
+                    borderColor: "rgba(14, 165, 233, 1)"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
 
-<br><br>
+    const featureCanvas = document.getElementById("featureImpactChart");
 
-Coming Soon
+    if (featureCanvas && featureLabels.length > 0) {
+        new Chart(featureCanvas, {
+            type: "bar",
+            data: {
+                labels: featureLabels,
+                datasets: [{
+                    label: "Feature impact",
+                    data: featureValues,
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    backgroundColor: featureValues.map(function(value) {
+                        return value < 0
+                            ? "rgba(239, 68, 68, 0.65)"
+                            : "rgba(16, 185, 129, 0.65)";
+                    }),
+                    borderColor: featureValues.map(function(value) {
+                        return value < 0
+                            ? "rgba(220, 38, 38, 1)"
+                            : "rgba(5, 150, 105, 1)";
+                    })
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
 
-</div>
+    const reportCanvas = document.getElementById("reportIndicatorsChart");
 
-<div class="card">
+    if (reportCanvas && reportLabels.length > 0) {
+        new Chart(reportCanvas, {
+            type: "line",
+            data: {
+                labels: reportLabels,
+                datasets: [{
+                    label: "Report value",
+                    data: reportValues,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: "rgba(14, 165, 233, 0.12)",
+                    borderColor: "rgba(14, 165, 233, 1)",
+                    pointBackgroundColor: "rgba(14, 165, 233, 1)",
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
 
-Healthcare Assistant
-
-<br><br>
-
-Coming Soon
-
-</div>
-
-<div class="card">
-
-<a href="/prediction/summary/">
-
-View Health Summary
-
-</a>
-
-</div>
+});
+</script>
 {% endblock %}

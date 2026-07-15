@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{%load static%}
+{% block content %}
+
+<style>
+    body {
+        background-image: url("{% static 'images/bg.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .prescription-container {
+        max-width: 1000px;
+        margin: 30px auto;
+    }
+
+    .prescription-card {
+        background: #ffffff;
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .title {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        font-size: 15px;
+    }
+
+    textarea.form-control {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .btn-analyze {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-analyze:hover {
+        background: #1d4ed8;
+    }
+
+    .medicine-box {
+        border-left: 5px solid #2563eb;
+        background: #f8fafc;
+        padding: 18px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+
+    .medicine-title {
+        font-size: 21px;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 14px;
+    }
+
+    .info-row {
+        margin: 8px 0;
+        color: #334155;
+        line-height: 1.5;
+    }
+
+    .info-row strong {
+        color: #1e293b;
+    }
+
+    .warning-box {
+        background: #fff7ed;
+        border-left: 5px solid #f97316;
+        padding: 15px;
+        border-radius: 12px;
+        margin-top: 20px;
+        color: #7c2d12;
+        line-height: 1.6;
+    }
+
+    .success {
+        color: #15803d;
+        font-weight: 700;
+    }
+
+    .error {
+        color: #dc2626;
+        font-weight: 700;
+    }
+
+    .not-found {
+        color: #ca8a04;
+        font-weight: 700;
+    }
+
+    .raw-text {
+        max-height: 250px;
+        overflow-y: auto;
+        background: #f1f5f9;
+        padding: 15px;
+        border-radius: 12px;
+        white-space: pre-wrap;
+        color: #334155;
+        line-height: 1.5;
+    }
+
+    .note-text {
+        color: #64748b;
+        font-size: 14px;
+        margin-top: 8px;
+    }
+</style>
+
+<div class="prescription-container">
+
+    <div class="prescription-card">
+        <h2 class="title">💊 Prescription Analyzer</h2>
+
+        <p class="subtitle">
+            Upload a prescription image/PDF or type the prescription text manually.
+            The system extracts medicines using OCR/LLM and fetches medicine details from the dataset.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label class="form-label">Upload Prescription Image / PDF</label>
+            <input 
+                type="file" 
+                name="prescription" 
+                class="form-control"
+                accept=".jpg,.jpeg,.png,.webp,.pdf"
+            >
+
+            <label class="form-label">Or Enter / Correct Prescription Text</label>
+            <textarea 
+                name="prescription_text" 
+                class="form-control"
+                placeholder="Example: Tab Crocin 500mg twice daily for 3 days"
+            ></textarea>
+
+            <button type="submit" class="btn-analyze">
+                Analyze Prescription
+            </button>
+
+            <p class="note-text">
+                For handwritten prescriptions, please verify the extracted text before using the analysis.
+            </p>
+        </form>
+    </div>
+
+    {% if result %}
+
+        <div class="prescription-card">
+            {% if result.status == "success" %}
+                <p class="success">✅ {{ result.message }}</p>
+            {% elif result.status == "not_found" %}
+                <p class="not-found">⚠️ {{ result.message }}</p>
+            {% else %}
+                <p class="error">⚠️ {{ result.message }}</p>
+            {% endif %}
+        </div>
+
+        {% if result.medicines %}
+
+            <div class="prescription-card">
+                <h3 class="title">Detected Medicines</h3>
+
+                {% for med in result.medicines %}
+
+                    <div class="medicine-box">
+                        <div class="medicine-title">
+                            💊 {{ med.medicine_name }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Matched Name:</strong> {{ med.matched_name }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Analysis Confidence:</strong> {{ med.confidence }}
+                        </div>
+
+                        <p>
+    <strong>RxNorm ID / RxCUI:</strong>
+    {{ med.rxnorm_id }}
+</p>
+
+<p>
+    <strong>RxNorm Name:</strong>
+    {{ med.rxnorm_name }}
+</p>
+
+<p>
+    <strong>RxNorm Match Term:</strong>
+    {{ med.rxnorm_match_term }}
+</p>
+
+<p>
+    <strong>RxNorm Term Type:</strong>
+    {{ med.rxnorm_tty }}
+</p>
+
+<p>
+    <strong>Ingredients:</strong>
+    {{ med.ingredients }}
+</p>
+
+<p>
+    <strong>Drug Class:</strong>
+    {{ med.drug_class }}
+</p>
+
+                        <div class="info-row">
+                            <strong>Detected Dosage:</strong> {{ med.dosage }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Detected Frequency:</strong> {{ med.frequency }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Detected Duration:</strong> {{ med.duration }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Purpose:</strong> {{ med.purpose }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Common Dosage:</strong> {{ med.common_dosage }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Common Frequency:</strong> {{ med.common_frequency }}
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Possible Side Effects:</strong> {{ med.side_effects }}
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>Warning:</strong> {{ med.warnings }} <br>
+                            <strong>Avoid If:</strong> {{ med.avoid_if }}
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="prescription-card">
+                <p class="not-found">
+                    No medicine analysis output found.
+                </p>
+                <p class="note-text">
+                    Check the extracted text below. If the OCR text is incorrect, type the medicine manually and analyze again.
+                </p>
+            </div>
+
+        {% endif %}
+
+        {% if result.warnings %}
+            <div class="prescription-card">
+                <h3 class="title">Safety Notes</h3>
+
+                <div class="warning-box">
+                    {% for warning in result.warnings %}
+                        • {{ warning }} <br>
+                    {% endfor %}
+
+                    <br>
+                    <strong>Note:</strong> This is an AI-assisted interpretation and does not replace a doctor or pharmacist.
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result.text %}
+            <div class="prescription-card">
+                <h3 class="title">Extracted / Entered Prescription Text</h3>
+                <div class="raw-text">{{ result.text }}</div>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

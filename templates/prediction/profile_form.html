@@ -1,21 +1,113 @@
 {% extends "base.html" %}
-
+{%load static%}
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-<h1>Health Profile</h1>
+<style>
+    body {
+        background-image: url("{% static 'images/bg.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .profile-form-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-family: system-ui, -apple-system, sans-serif;
+    }
 
-<form method="POST">
+    .profile-form-container h1 {
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+        border-bottom: 2px solid #edf2f7;
+        padding-bottom: 0.5rem;
+    }
 
-{% csrf_token %}
+    /* Target the form and arrange fields linearly */
+    .linear-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        align-items: flex-end; /* Aligns button nicely if it's on the same row */
+    }
 
-{{ form.as_p }}
+    /* Style Django's default <p> outputs as individual row items */
+    .linear-form p {
+        flex: 1 1 250px; /* Allows fields to grow and shrink, breaking to a new row if tight */
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 
-<button type="submit">
+    /* Style the labels */
+    .linear-form label {
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.9rem;
+    }
 
-Save
+    /* Style the inputs, selects, and textareas */
+    .linear-form input, 
+    .linear-form select, 
+    .linear-form textarea {
+        width: 100%;
+        padding: 0.65rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-</button>
+    .linear-form input:focus, 
+    .linear-form select:focus {
+        outline: none;
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
 
-</form>
+    /* Button styling container to force it to a new row or align it */
+    .form-actions {
+        flex: 1 1 100%; /* Forces the button to its own row at the bottom */
+        margin-top: 1rem;
+    }
 
+    .submit-btn {
+        background-color: #24a06a;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .submit-btn:hover {
+        background-color: #2b6cb0;
+    }
+</style>
+
+<div class="profile-form-container">
+    <h1><i class="bi bi-activity"></i>  Health Profile</h1>
+    
+    <form method="POST" class="linear-form">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+        
+        <div class="form-actions">
+            <button type="submit" class="submit-btn">
+                Save Profile
+            </button>
+        </div>
+    </form>
+</div>
 {% endblock %}

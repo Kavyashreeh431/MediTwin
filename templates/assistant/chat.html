@@ -1,0 +1,691 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+{%load static%}
+<style>
+:root {
+    --primary: #4f80e1;
+    --primary-light: #eef4ff;
+    --bg-main: #e2f4ee;
+    --text-dark: #202b36;
+    --text-muted: #788696;
+    --card-bg: #ffffff;
+    --bot-bubble: #d4e3fc;
+    --user-bubble: #10b981;
+    --border-color: #f1f5f9;
+}
+
+body {
+    background-image: url("{% static 'images/bg.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.assistant-page {
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.assistant-shell {
+    width: 100%;
+    max-width: 950px;
+    background: var(--card-bg);
+    border-radius: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 820px;
+    position: relative;
+    border: 8px solid #ffffff;
+}
+
+.assistant-header {
+    padding: 24px 24px 16px 24px;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0;
+    margin-right: auto;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.assistant-title-wrap {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+.assistant-title-wrap h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.clear-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: auto;
+}
+
+/* Chat Body */
+.chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background: var(--card-bg);
+    scroll-behavior: smooth;
+}
+
+.chat-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 999px;
+}
+
+/* Date Divider */
+.chat-date-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 18px 0;
+}
+
+.chat-date-divider span {
+    background: rgba(255, 255, 255, 0.9);
+    color: #475569;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.message-time {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-left: 8px;
+}
+
+/* Message Layout */
+.message-row {
+    display: flex;
+    margin-bottom: 24px;
+    position: relative;
+    align-items: flex-end;
+}
+
+.message-row.bot {
+    padding-left: 40px;
+}
+
+.bot-avatar-icon {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 30px;
+    background: #4f80e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.message-group {
+    max-width: 85%;
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.message-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text-muted);
+    padding: 0 4px;
+}
+
+.user .message-label {
+    text-align: right;
+}
+
+.message-bubble {
+    padding: 16px 20px;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.bot .message-bubble {
+    background-color: var(--bot-bubble);
+    color: #1e293b;
+    border-radius: 18px 18px 18px 4px;
+}
+
+.user .message-bubble {
+    background-color: var(--user-bubble);
+    color: #ffffff;
+    border-radius: 18px 18px 4px 18px;
+}
+
+/* Input */
+.chat-input-area {
+    padding: 16px 20px;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+}
+
+.chat-form {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border-radius: 30px;
+    padding: 6px 6px 6px 18px;
+}
+
+.input-wrap {
+    flex: 1;
+}
+
+.chat-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.chat-input::placeholder {
+    color: #94a3b8;
+}
+
+.send-btn {
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    background: #000000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.send-btn:hover {
+    background: #222222;
+}
+
+.send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.send-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    transform: rotate(45deg);
+    margin-left: -2px;
+    margin-top: 2px;
+}
+
+/* Empty Chat */
+.empty-chat {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.illustration-box {
+    width: 140px;
+    height: 140px;
+    background: #eef2ff;
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.illustration-box::before {
+    /* content: "💬"; */
+    position: absolute;
+    font-size: 24px;
+    top: 10px;
+    left: -10px;
+}
+
+.empty-chat h4 {
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+.empty-chat p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* Typing Indicator */
+.thinking-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+}
+
+.thinking-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4f80e1;
+    animation: typing 1s infinite ease-in-out;
+}
+
+.thinking-dot:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.thinking-dot:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes typing {
+    0%, 80%, 100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+@media (max-width: 768px) {
+    .assistant-page {
+        padding: 0;
+    }
+
+    .assistant-shell {
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        max-width: 100%;
+    }
+
+    .message-group {
+        max-width: 92%;
+    }
+}
+</style>
+
+<div class="assistant-page">
+    <div class="assistant-shell">
+
+        <div class="assistant-header">
+            <a href="{% url 'dashboard' %}" class="back-btn">←</a>
+
+            <div class="assistant-title-wrap">
+                <h1>MediTwin Bot</h1>
+            </div>
+
+            <a href="{% url 'clear_assistant_chat' %}" class="clear-btn" title="Clear Conversation">
+                <i class="bi bi-trash3-fill" style="color: rgb(232, 35, 35);"></i>
+            </a>
+        </div>
+
+        <div class="chat-body" id="chatBody" data-last-date="{{ last_message_date_key|default:'' }}">
+
+            {% if chat_messages %}
+
+                {% for item in chat_messages %}
+
+                    {% ifchanged item.created_at|date:"Y-m-d" %}
+                        <div class="chat-date-divider" data-date-key="{{ item.created_at|date:'Y-m-d' }}">
+                            <span>{{ item.created_at|date:"l, d F Y" }}</span>
+                        </div>
+                    {% endifchanged %}
+
+                    <div class="message-row user">
+                        <div class="message-group">
+                            <div class="message-label">
+                                You
+                                <span class="message-time">
+                                    {{ item.created_at|date:"h:i A" }}
+                                </span>
+                            </div>
+
+                            <div class="message-bubble">
+                                {{ item.question }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-row bot">
+                        <div class="bot-avatar-icon"><i class="bi bi-robot" style="color: white; font-size: larger;"></i></div>
+
+                        <div class="message-group">
+                            <div class="message-label">
+                                MediTwin Assistant
+                                <span class="message-time">
+                                    {{ item.created_at|date:"h:i A" }}
+                                </span>
+                            </div>
+
+                            <div class="message-bubble">
+                                {{ item.answer|linebreaksbr }}
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <div class="empty-chat" id="emptyChat">
+                    <div class="illustration-box">🤖</div>
+
+                    <h4>Hello {{ request.user.username }},</h4>
+
+                    <p>
+                        I’m your MediTwin health assistant.<br><br>
+                        You can ask me about symptoms, medicines, prescriptions, reports, BMI, sleep, glucose, or general wellness.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="chat-input-area">
+            <form method="POST" class="chat-form" id="assistantForm">
+                {% csrf_token %}
+
+                <div class="input-wrap">
+                    <input
+                        type="text"
+                        id="questionInput"
+                        class="chat-input"
+                        placeholder="Type message here..."
+                        autocomplete="off"
+                        required
+                    >
+
+                    <input type="hidden" name="question" id="questionHidden">
+                </div>
+
+                <button type="submit" class="send-btn" id="sendBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const chatBody = document.getElementById("chatBody");
+const form = document.getElementById("assistantForm");
+const input = document.getElementById("questionInput");
+const hiddenInput = document.getElementById("questionHidden");
+const sendBtn = document.getElementById("sendBtn");
+
+function padNumber(number) {
+    return String(number).padStart(2, "0");
+}
+
+function getCurrentDateKey() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = padNumber(now.getMonth() + 1);
+    const day = padNumber(now.getDate());
+
+    return `${year}-${month}-${day}`;
+}
+
+function getCurrentDateLabel() {
+    const now = new Date();
+
+    return now.toLocaleDateString("en-US", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+    });
+}
+
+function getCurrentTimeLabel() {
+    const now = new Date();
+
+    return now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function initializeLastDate() {
+    if (!chatBody) {
+        return;
+    }
+
+    const existingLastDate = chatBody.getAttribute("data-last-date");
+
+    if (existingLastDate) {
+        return;
+    }
+
+    const dividers = chatBody.querySelectorAll(".chat-date-divider");
+
+    if (dividers.length > 0) {
+        const lastDivider = dividers[dividers.length - 1];
+        const dateKey = lastDivider.getAttribute("data-date-key");
+
+        if (dateKey) {
+            chatBody.setAttribute("data-last-date", dateKey);
+        }
+    }
+}
+
+function addDateDividerIfNeeded(dateKey, dateLabel) {
+    const lastDate = chatBody.getAttribute("data-last-date");
+
+    if (lastDate !== dateKey) {
+        const divider = document.createElement("div");
+        divider.className = "chat-date-divider";
+        divider.setAttribute("data-date-key", dateKey);
+        divider.innerHTML = `<span>${dateLabel}</span>`;
+
+        chatBody.appendChild(divider);
+        chatBody.setAttribute("data-last-date", dateKey);
+    }
+}
+
+function scrollToBottom() {
+    if (chatBody) {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+}
+
+function createUserMessage(question, timeLabel) {
+    const userRow = document.createElement("div");
+    userRow.className = "message-row user";
+
+    userRow.innerHTML = `
+        <div class="message-group">
+            <div class="message-label">
+                You
+                <span class="message-time">${timeLabel}</span>
+            </div>
+            <div class="message-bubble"></div>
+        </div>
+    `;
+
+    userRow.querySelector(".message-bubble").textContent = question;
+
+    return userRow;
+}
+
+function createBotThinkingMessage(timeLabel) {
+    const botRow = document.createElement("div");
+    botRow.className = "message-row bot";
+
+    botRow.innerHTML = `
+        <div class="bot-avatar-icon">M</div>
+
+        <div class="message-group">
+            <div class="message-label">
+                MediTwin Assistant
+                <span class="message-time">${timeLabel}</span>
+            </div>
+
+            <div class="message-bubble">
+                <span class="thinking-bubble">
+                    <span class="thinking-dot"></span>
+                    <span class="thinking-dot"></span>
+                    <span class="thinking-dot"></span>
+                </span>
+            </div>
+        </div>
+    `;
+
+    return botRow;
+}
+
+function showTemporaryMessages(question) {
+    const emptyChat = document.getElementById("emptyChat");
+
+    if (emptyChat) {
+        emptyChat.remove();
+    }
+
+    const dateKey = getCurrentDateKey();
+    const dateLabel = getCurrentDateLabel();
+    const timeLabel = getCurrentTimeLabel();
+
+    addDateDividerIfNeeded(dateKey, dateLabel);
+
+    const userRow = createUserMessage(question, timeLabel);
+    chatBody.appendChild(userRow);
+
+    const botRow = createBotThinkingMessage(timeLabel);
+    chatBody.appendChild(botRow);
+
+    scrollToBottom();
+
+    return botRow.querySelector(".message-bubble");
+}
+
+function getCsrfToken() {
+    const csrfInput = document.querySelector("[name=csrfmiddlewaretoken]");
+    return csrfInput ? csrfInput.value : "";
+}
+
+if (form) {
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const question = input.value.trim();
+
+        if (!question) {
+            return;
+        }
+
+        hiddenInput.value = question;
+
+        const botBubble = showTemporaryMessages(question);
+
+        input.value = "";
+        sendBtn.disabled = true;
+
+        const formData = new FormData(form);
+        const csrfToken = getCsrfToken();
+
+        try {
+            const response = await fetch(window.location.href, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": csrfToken
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.date_key && data.date_label) {
+                addDateDividerIfNeeded(data.date_key, data.date_label);
+            }
+
+            if (data.success) {
+                botBubble.textContent = data.answer;
+            } else {
+                botBubble.textContent = data.error || "Something went wrong. Please try again.";
+            }
+
+        } catch (error) {
+            console.error(error);
+            botBubble.textContent = "Unable to connect to the assistant. Please check the server and try again.";
+        }
+
+        sendBtn.disabled = false;
+        input.focus();
+        scrollToBottom();
+    });
+}
+
+initializeLastDate();
+scrollToBottom();
+</script>
+
+{% endblock %}

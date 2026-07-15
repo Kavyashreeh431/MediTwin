@@ -1,0 +1,56 @@
+category,test_name,aliases,adult_low,adult_high,pregnant_low,pregnant_high,child_low,child_high,unit,normal_interpretation,low_interpretation,high_interpretation,possible_condition
+
+Diabetes,HbA1c,HbA1c|Glycosylated Hemoglobin,4.0,5.6,4.0,5.6,4.0,5.6,%,Normal glucose control,Hypoglycemia risk,Diabetes risk,Diabetes
+
+Diabetes,Fasting Glucose,FBS|Blood Glucose,70,100,70,95,70,100,mg/dL,Normal blood sugar,Hypoglycemia,Hyperglycemia/Diabetes,Diabetes
+
+Thyroid,TSH,Thyroid Stimulating Hormone,0.4,4.0,0.1,3.0,0.7,6.4,uIU/mL,Normal thyroid function,Hyperthyroidism,Hypothyroidism,Thyroid Disorders
+
+Thyroid,T3,Triiodothyronine,80,200,80,220,90,220,ng/dL,Normal thyroid hormone,Possible hypothyroid,Possible hyperthyroid,Thyroid Disorders
+
+Thyroid,T4,Thyroxine,5.0,12.0,7.0,15.0,6.0,14.0,ug/dL,Normal thyroid hormone,Possible hypothyroid,Possible hyperthyroid,Thyroid Disorders
+
+CBC,Hemoglobin,Hb,12,15,11,14,11,16,g/dL,Normal hemoglobin,Anemia,Polycythemia,Hematologic Disorders
+
+CBC,WBC,White Blood Cells,4000,11000,5000,15000,5000,15000,cells/uL,Normal immunity,Immune suppression/Infection risk,Infection/Inflammation,Infections
+
+CBC,Platelets,Platelet Count,150000,450000,150000,450000,150000,450000,cells/uL,Normal clotting,Bleeding risk,Thrombocytosis,Hematologic Disorders
+
+Kidney,Creatinine,Serum Creatinine,0.6,1.2,0.4,0.8,0.3,0.8,mg/dL,Normal kidney function,Low muscle mass,Kidney dysfunction,CKD
+
+Kidney,Urea,Blood Urea,15,40,10,35,10,35,mg/dL,Normal kidney function,Low protein state,Renal impairment,Kidney Disease
+
+Liver,ALT,SGPT,7,56,7,40,7,45,U/L,Normal liver function,None,Liver inflammation,Liver Disease
+
+Liver,AST,SGOT,10,40,10,35,10,40,U/L,Normal liver function,None,Liver injury,Liver Disease
+
+Lipid,Cholesterol,Total Cholesterol,0,200,0,200,0,170,mg/dL,Healthy cholesterol,None,Cardiovascular risk,Dyslipidemia
+
+Lipid,Triglycerides,TG,0,150,0,150,0,100,mg/dL,Healthy triglycerides,None,Metabolic risk,Dyslipidemia
+
+Urine,Protein,Urine Protein,0,0,0,0,0,0,Negative,Normal kidney function,None,Proteinuria,Kidney Disease
+
+Urine,Glucose,Urine Glucose,0,0,0,0,0,0,Negative,Normal,None,Possible diabetes,Diabetes
+
+Urine,Bacteria,Urine Bacteria,0,0,0,0,0,0,Absent,No infection,None,Possible UTI,Urinary Tract Infection
+
+Urine,Pus Cells,WBC Urine,0,5,0,5,0,5,/hpf,Normal urine,None,Possible infection,UTI
+
+Vitamin,Vitamin D,25-OH Vitamin D,30,100,30,100,30,100,ng/mL,Healthy vitamin D,Deficiency,Toxicity,Vitamin Disorders
+
+Vitamin,Vitamin B12,B12,200,900,200,900,200,900,pg/mL,Normal B12,Deficiency,None,Neurological Disorders
+
+Heart,Heart Rate,Pulse Rate,60,100,60,110,70,120,bpm,Normal heart rate,Bradycardia,Tachycardia,Cardiac Disorders
+
+Inflammation,ESR,Erythrocyte Sedimentation Rate,0,20,0,30,0,15,mm/hr,Normal inflammatory status,None,Inflammation,Autoimmune/Inflammatory Disorders
+
+Inflammation,CRP,C-Reactive Protein,0,5,0,5,0,5,mg/L,Normal inflammatory status,None,Acute inflammation,Inflammatory Disorders
+
+Diabetes,Estimated Average Glucose,Estimated Average Glucose|eAG|Average Glucose,70,140,70,140,70,140,mg/dL,Average glucose level is within expected range,Hypoglycemia pattern,High average glucose may suggest diabetes risk,Diabetes
+Urine,Epithelial Cells,Epithelial Cells|Epithelial Cell,0,5,0,5,0,5,/hpf,Epithelial cells are within normal urine range,None,Increased epithelial cells may suggest sample contamination or urinary tract irritation,Urinary Irritation
+Inflammation,CRP,CRP|C Reactive Protein|C-Reactive Protein|C-Reactive Protein CRP,0,5,0,5,0,5,mg/L,Normal inflammatory status,None,Elevated CRP may suggest inflammation or infection,Inflammation
+Thyroid,TSH,TSH|Thyroid Stimulating Hormone,0.4,4.0,0.1,3.0,0.7,6.4,uIU/mL,TSH is within normal thyroid range,Low TSH may suggest hyperthyroid pattern,High TSH may suggest hypothyroid pattern,Thyroid Disorder
+Thyroid,T3,T3|Total T3|Triiodothyronine,80,200,80,220,90,220,ng/dL,T3 is within normal range,Low T3 may suggest reduced thyroid hormone level,High T3 may suggest hyperthyroid pattern,Thyroid Disorder
+Thyroid,T4,T4|Total T4|Thyroxine,5,12,7,15,6,14,ug/dL,T4 is within normal range,Low T4 may suggest hypothyroid pattern,High T4 may suggest hyperthyroid pattern,Thyroid Disorder
+Thyroid,Free T3,FT3|Free T3,2.0,4.4,2.0,4.4,2.5,5.0,pg/mL,Free T3 is within normal range,Low Free T3 may suggest reduced thyroid hormone activity,High Free T3 may suggest hyperthyroid pattern,Thyroid Disorder
+Thyroid,Free T4,FT4|Free T4,0.8,1.8,0.8,1.8,0.8,2.0,ng/dL,Free T4 is within normal range,Low Free T4 may suggest hypothyroid pattern,High Free T4 may suggest hyperthyroid pattern,Thyroid Disorder

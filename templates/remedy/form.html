@@ -1,0 +1,43 @@
+<h2>Remedy Advisor</h2>
+
+<form method="post">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button type="submit">
+
+Get Suggestion
+
+</button>
+
+</form>
+
+{% if recommendation %}
+
+<hr>
+
+<p>
+
+Severity:
+<strong>
+
+{{ severity }}
+
+</strong>
+
+</p>
+
+<p>
+
+Suggestion:
+<strong>
+
+{{ recommendation }}
+
+</strong>
+
+</p>
+
+{% endif %}

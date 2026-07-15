@@ -1,13 +1,984 @@
-<h1>Login</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-<form method="POST">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTwin | AI Healthcare Platform</title>
 
-{% csrf_token %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-{{ form.as_p }}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<button type="submit">
-Login
-</button>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-</form>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100%;
+            background: #e9f5f1;
+        }
+
+        /* MAIN HORIZONTAL SCROLLER */
+        .horizontal-page {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            flex-wrap: nowrap;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .horizontal-page::-webkit-scrollbar {
+            display: none;
+        }
+
+        .horizontal-page {
+            scrollbar-width: none;
+        }
+
+        /* PARALLAX BACKGROUND */
+        .parallax-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    background-image: url("{% static 'images/login1.png' %}");
+    background-size: cover;
+    background-position: 50% center;
+    background-repeat: no-repeat;
+
+    will-change: background-position;
+}
+
+/* Dark surrounding / vignette effect */
+.parallax-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 255, 255, 0.02) 0%,
+            rgba(15, 23, 42, 0.08) 35%,
+            rgba(15, 23, 42, 0.38) 75%,
+            rgba(15, 23, 42, 0.65) 100%
+        );
+    pointer-events: none;
+}
+        .bg-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .layer-waves {
+            z-index: 3;
+            opacity: 0.45;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8), transparent 12%),
+                radial-gradient(circle at 75% 60%, rgba(13, 148, 136, 0.20), transparent 18%),
+                radial-gradient(circle at 55% 25%, rgba(244, 114, 182, 0.13), transparent 15%);
+        }
+
+        .layer-lines {
+            z-index: 4;
+            opacity: 0.35;
+            background-image:
+                linear-gradient(90deg, rgba(15, 118, 110, 0.15) 1px, transparent 1px),
+                linear-gradient(rgba(15, 118, 110, 0.10) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+
+        .layer-dots {
+            z-index: 5;
+            opacity: 0.6;
+            background:
+                radial-gradient(circle, rgba(20, 184, 166, 0.75) 2px, transparent 3px);
+            background-size: 150px 150px;
+        }
+
+        /* TOP NAV */
+        .top-nav {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            width: min(1120px, calc(100% - 48px));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 22px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        .brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-hint {
+            font-size: 0.86rem;
+            color: #475569;
+        }
+
+        /* SECTIONS */
+        .panel {
+            position: relative;
+            z-index: 10;
+            flex: 0 0 100vw;
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 7vw 60px;
+        }
+
+        .panel-inner {
+            width: min(1160px, 100%);
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .content-card,
+        .login-card,
+        .module-card {
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.12);
+            border-radius: 32px;
+        }
+
+        .content-card {
+            padding: 44px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            background: rgba(20, 184, 166, 0.12);
+            color: #047857;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 22px;
+        }
+
+        .title {
+            font-size: clamp(2.6rem, 5vw, 5rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -3px;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            color: #475569;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 620px;
+        }
+
+        .cta-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn-main {
+            height: 50px;
+            padding: 0 26px;
+            border-radius: 999px;
+            font-weight: 700;
+            background: #0284c7;
+            color: white;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s ease;
+        }
+
+        .btn-main:hover {
+            background: #0369a1;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-soft {
+            height: 50px;
+            padding: 0 26px;
+            border-radius: 999px;
+            font-weight: 700;
+            color: #0f766e;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(15, 118, 110, 0.18);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s ease;
+        }
+
+        .btn-soft:hover {
+            color: #0f766e;
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        /* AUTH FLIP CARD */
+        .auth-scene {
+            width: 430px;
+            max-width: 100%;
+            perspective: 1300px;
+            margin-left: auto;
+        }
+
+        .auth-flip-card {
+            position: relative;
+            width: 100%;
+            min-height: 545px;
+            transform-style: preserve-3d;
+            transition: transform 0.85s cubic-bezier(.2, .8, .2, 1);
+        }
+
+        .auth-scene.show-register .auth-flip-card {
+            transform: rotateY(180deg);
+        }
+
+        .auth-face {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .auth-back {
+            transform: rotateY(180deg);
+        }
+
+        .login-card {
+            width: 430px;
+            max-width: 100%;
+            padding: 42px;
+            margin-left: auto;
+        }
+
+        .logo {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .login-card h2 {
+            color: #0f172a;
+            letter-spacing: -0.6px;
+        }
+
+        .login-card p {
+            color: #64748b;
+        }
+
+        .form-control {
+            height: 52px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            background: rgba(239, 246, 255, 0.85);
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+            border-color: #38bdf8;
+        }
+
+        .auth-link {
+            color: #0284c7;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .auth-link:hover {
+            color: #0369a1;
+        }
+
+        .small-note {
+            font-size: 0.78rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* FLOATING VISUAL */
+        .visual-orbit {
+            position: relative;
+            height: 460px;
+        }
+
+        .float-card {
+            position: absolute;
+            padding: 18px 22px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.10);
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .float-card span {
+            display: block;
+            font-weight: 500;
+            color: #64748b;
+            margin-top: 4px;
+            font-size: 0.85rem;
+        }
+
+        .f1 {
+            top: 30px;
+            left: 20px;
+        }
+
+        .f2 {
+            top: 150px;
+            right: 40px;
+        }
+
+        .f3 {
+            bottom: 80px;
+            left: 80px;
+        }
+
+        .f4 {
+            bottom: 20px;
+            right: 110px;
+        }
+
+        .glow-circle {
+            position: absolute;
+            inset: 70px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, rgba(20, 184, 166, 0.28), transparent 60%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* MODULE SECTIONS */
+        .module-card {
+            padding: 44px;
+            max-width: 620px;
+        }
+
+        .module-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            background: rgba(20, 184, 166, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            margin-bottom: 24px;
+        }
+
+        .module-card h2 {
+            font-size: clamp(2rem, 4vw, 3.6rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            color: #0f172a;
+            margin-bottom: 18px;
+        }
+
+        .module-card p {
+            color: #475569;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .feature-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .feature-pills span {
+            padding: 9px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid rgba(15, 118, 110, 0.12);
+            color: #0f766e;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* SCROLL INDICATOR */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 60;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.62);
+            backdrop-filter: blur(14px);
+            color: #475569;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            body {
+                overflow-y: auto;
+            }
+
+            .horizontal-page {
+                overflow-y: auto;
+                overflow-x: hidden;
+                flex-direction: column;
+                height: auto;
+                scroll-snap-type: y mandatory;
+            }
+
+            .panel {
+                min-width: 100vw;
+                min-height: 100vh;
+                height: auto;
+                padding: 110px 22px 60px;
+            }
+
+            .panel-inner {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .auth-scene,
+            .login-card {
+                margin: 0 auto;
+            }
+
+            .auth-flip-card {
+                min-height: 570px;
+            }
+
+            .visual-orbit {
+                height: 320px;
+            }
+
+            .top-nav {
+                width: calc(100% - 28px);
+                top: 14px;
+            }
+
+            .nav-hint {
+                display: none;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Parallax Background -->
+    <div class="parallax-bg" id="parallaxBg">
+        <div class="bg-image-layer" id="bgImageLayer"></div>
+        <div class="bg-layer layer-waves" id="layerWaves"></div>
+        <div class="bg-layer layer-lines" id="layerLines"></div>
+        <div class="bg-layer layer-dots" id="layerDots"></div>
+    </div>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="brand">🩺 MediTwin</div>
+        <div class="nav-hint">Scroll horizontally to explore</div>
+    </nav>
+    <!-- 🧬
+🩺
+❤️
+🫀
+🧠
+💊
+💉
+🌡️
+🩸
+🧪
+🔬
+📄
+📋
+🏥
+⚕️
+🌿
+🤖
+📈
+🫁
+👁️ -->
+    <!-- Horizontal Scroll Page -->
+    <main class="horizontal-page" id="horizontalPage">
+
+        <!-- HERO + LOGIN / REGISTER -->
+        <section class="panel">
+            <div class="panel-inner">
+
+                <div class="content-card">
+                    <div class="eyebrow">AI-Powered Healthcare Platform</div>
+
+                    <h1 class="title">
+                        Your Digital Health Twin
+                    </h1>
+
+                    <p class="subtitle">
+                        MediTwin combines personalized health prediction, explainable AI,
+                        remedy guidance, medical report summarization, prescription analysis,
+                        and conversational health assistance in one intelligent platform.
+                    </p>
+
+                    <div class="cta-row">
+                        <a href="#" class="btn-main" id="heroShowLogin">Login Now</a>
+                        <a href="#" class="btn-soft" id="heroShowRegister">Create Account</a>
+                    </div>
+                </div>
+
+                <div class="auth-scene" id="authScene">
+                    <div class="auth-flip-card">
+
+                        <!-- LOGIN SIDE -->
+                        <div class="auth-face auth-front">
+                            <div class="login-card" id="login">
+                                <div class="text-center mb-4">
+                                    <div class="logo">🩺</div>
+                                    <h2 class="fw-bold mb-1 fs-3">MediTwin</h2>
+                                    <p class="small mb-0">Sign in to continue</p>
+                                </div>
+
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} py-2 px-3 rounded-3 small mb-3">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+
+                                <form method="POST" action="{% url 'login' %}">
+                                    {% csrf_token %}
+
+                                    <input name="username" class="form-control mb-3" placeholder="Username" required>
+
+                                    <input type="password" name="password" class="form-control mb-4"
+                                        placeholder="Password" required>
+
+                                    <button class="btn btn-main w-100">Login</button>
+                                </form>
+
+                                <div class="text-center mt-3">
+                                    <p class="small mb-0">
+                                        No account?
+                                        <a href="#" class="auth-link" id="showRegister">
+                                            Register
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REGISTER SIDE -->
+                        <div class="auth-face auth-back">
+                            <div class="login-card">
+                                <div class="text-center mb-4">
+                                    <div class="logo">🩺</div>
+                                    <h2 class="fw-bold mb-1 fs-3">Create Account</h2>
+                                    <p class="small mb-0">Join MediTwin AI</p>
+                                </div>
+
+                                <form method="POST" action="{% url 'register' %}">
+                                    {% csrf_token %}
+
+                                    <input name="username" class="form-control mb-3" placeholder="Choose username"
+                                        required>
+                                    <input class="form-control mb-3" type="email" name="email" placeholder="Email address" required>
+                                    <input type="password" name="password1" class="form-control mb-3"
+                                        placeholder="Create password" required>
+
+                                    <input type="password" name="password2" class="form-control mb-3"
+                                        placeholder="Confirm password" required>
+
+                                    <button class="btn btn-main w-100">Register</button>
+                                </form>
+
+                                <p class="small-note text-center mt-3 mb-0">
+                                    Password should not be too common and should contain enough characters.
+                                </p>
+
+                                <div class="text-center mt-3">
+                                    <p class="small mb-0">
+                                        Already have an account?
+                                        <a href="#" class="auth-link" id="showLogin">
+                                            Sign in
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- HEALTH PREDICTION -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">❤️</div>
+                    <h2>Personalized Health Prediction</h2>
+                    <p>
+                        Analyze BMI, glucose, heart rate, sleep duration, and exercise activity
+                        to generate a personalized health risk level and health score.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>BMI</span>
+                        <span>Glucose</span>
+                        <span>Heart Rate</span>
+                        <span>Sleep</span>
+                        <span>Exercise</span>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">BMI <span>Feature impact</span></div>
+                    <div class="float-card f2">Glucose <span>Health marker</span></div>
+                    <div class="float-card f3">Sleep <span>Lifestyle signal</span></div>
+                    <div class="float-card f4">Risk Score <span>Explainable AI</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIGITAL TWIN -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">🧠</div>
+                    <h2>Explainable Digital Twin</h2>
+                    <p>
+                        The system explains how each biometric marker contributes positively
+                        or negatively to the final prediction using simple feature attribution.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>Risk Prediction</span>
+                        <span>Feature Impact</span>
+                        <span>AI Explanation</span>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">BMI -35 <span>Negative impact</span></div>
+                    <div class="float-card f2">Sleep +25 <span>Positive impact</span></div>
+                    <div class="float-card f3">Exercise +25 <span>Positive impact</span></div>
+                    <div class="float-card f4">Moderate <span>Risk level</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REMEDY -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">🌿</div>
+                    <h2>Remedy Advisor</h2>
+                    <p>
+                        Get dataset-based remedy suggestions for common symptoms such as fever,
+                        cold, cough, headache, allergy, and acidity with safety guidance.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>Fever</span>
+                        <span>Cold</span>
+                        <span>Cough</span>
+                        <span>Headache</span>
+                        <span>Allergy</span>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">Symptoms <span>User input</span></div>
+                    <div class="float-card f2">Remedies <span>Dataset based</span></div>
+                    <div class="float-card f3">Advice <span>Safety first</span></div>
+                    <div class="float-card f4">Guidance <span>Simple output</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REPORT SUMMARIZER -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">📄</div>
+                    <h2>Medical Report Summarizer</h2>
+                    <p>
+                        Upload medical reports and convert complex report values into
+                        simple, understandable summaries for better health awareness.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>PDF Upload</span>
+                        <span>Text Extraction</span>
+                        <span>Simple Summary</span>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">Blood Report <span>Upload</span></div>
+                    <div class="float-card f2">OCR Scan <span>Extract text</span></div>
+                    <div class="float-card f3">Summary <span>Readable result</span></div>
+                    <div class="float-card f4">Values <span>Health context</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRESCRIPTION -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">💊</div>
+                    <h2>Prescription Analyzer</h2>
+                    <p>
+                        Extract medicine names, dosage, frequency, duration, purpose, side effects,
+                        and warnings using local LLM support and a medicine dataset.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>OCR</span>
+                        <span>Ollama LLM</span>
+                        <span>Medicine Dataset</span>
+                        <span>Safety Notes</span>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">Medicine <span>Detected</span></div>
+                    <div class="float-card f2">Dosage <span>Extracted</span></div>
+                    <div class="float-card f3">Warnings <span>Safety</span></div>
+                    <div class="float-card f4">Dataset <span>Verified</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ASSISTANT -->
+        <section class="panel">
+            <div class="panel-inner">
+                <div class="module-card">
+                    <div class="module-icon">🤖</div>
+                    <h2>AI Health Assistant</h2>
+                    <p>
+                        Ask general health questions using a local Gemini-powered assistant
+                        with safe responses and local medicine dataset context.
+                    </p>
+
+                    <div class="feature-pills">
+                        <span>Chat Support</span>
+                        <span>Gemini</span>
+                        <span>Medicine Context</span>
+                        <span>Safety Filter</span>
+                    </div>
+
+                    <div class="cta-row">
+                        <a href="#" class="btn-main" id="footerShowLogin">Login to Continue</a>
+                        <a href="#" class="btn-soft" id="footerShowRegister">Register</a>
+                    </div>
+                </div>
+
+                <div class="visual-orbit">
+                    <div class="glow-circle"></div>
+                    <div class="float-card f1">Question <span>What is Crocin?</span></div>
+                    <div class="float-card f2">Assistant <span>Safe answer</span></div>
+                    <div class="float-card f3">Dataset <span>Local context</span></div>
+                    <div class="float-card f4">Doctor Note <span>Safety</span></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- <div class="scroll-indicator">
+    Scroll mouse wheel or swipe horizontally →
+</div> -->
+
+
+    <script>
+        const scroller = document.getElementById("horizontalPage");
+        const bg = document.getElementById("parallaxBg");
+        const waves = document.getElementById("layerWaves");
+        const lines = document.getElementById("layerLines");
+        const dots = document.getElementById("layerDots");
+
+        const authScene = document.getElementById("authScene");
+        const showRegister = document.getElementById("showRegister");
+        const showLogin = document.getElementById("showLogin");
+        const heroShowRegister = document.getElementById("heroShowRegister");
+        const heroShowLogin = document.getElementById("heroShowLogin");
+        const footerShowRegister = document.getElementById("footerShowRegister");
+        const footerShowLogin = document.getElementById("footerShowLogin");
+
+        function goToFirstPanel() {
+            scroller.scrollTo({
+                left: 0,
+                behavior: "smooth"
+            });
+        }
+
+        function openRegisterCard() {
+            goToFirstPanel();
+            setTimeout(function () {
+                authScene.classList.add("show-register");
+            }, 350);
+        }
+
+        function openLoginCard() {
+            goToFirstPanel();
+            setTimeout(function () {
+                authScene.classList.remove("show-register");
+            }, 350);
+        }
+
+        /* Mouse wheel horizontal scroll */
+        window.addEventListener("wheel", function (event) {
+            if (window.innerWidth > 900) {
+                event.preventDefault();
+                scroller.scrollLeft += event.deltaY * 1.3;
+            }
+        }, { passive: false });
+
+        /* Keyboard horizontal scroll */
+        window.addEventListener("keydown", function (event) {
+            if (window.innerWidth > 900) {
+                if (event.key === "ArrowRight") {
+                    scroller.scrollLeft += window.innerWidth;
+                }
+
+                if (event.key === "ArrowLeft") {
+                    scroller.scrollLeft -= window.innerWidth;
+                }
+            }
+        });
+
+        /* Parallax movement */
+        scroller.addEventListener("scroll", function () {
+            const x = scroller.scrollLeft;
+            const maxScroll = scroller.scrollWidth - scroller.clientWidth;
+
+            let progress = 0;
+
+            if (maxScroll > 0) {
+                progress = x / maxScroll;
+            }
+
+            /*
+              Background moves only from 48% to 52%.
+              This gives slight parallax movement without repeating image
+              and without showing white space.
+            */
+            const bgPosition = 48 + (progress * 4);
+
+            bg.style.backgroundPosition = `${bgPosition}% center`;
+
+            waves.style.transform = `translateX(${-x * 0.08}px)`;
+            lines.style.transform = `translateX(${-x * 0.14}px)`;
+            dots.style.transform = `translateX(${-x * 0.22}px)`;
+        });
+
+        /* Auth flip controls */
+        if (showRegister) {
+            showRegister.addEventListener("click", function (event) {
+                event.preventDefault();
+                authScene.classList.add("show-register");
+            });
+        }
+
+        if (showLogin) {
+            showLogin.addEventListener("click", function (event) {
+                event.preventDefault();
+                authScene.classList.remove("show-register");
+            });
+        }
+
+        if (heroShowRegister) {
+            heroShowRegister.addEventListener("click", function (event) {
+                event.preventDefault();
+                openRegisterCard();
+            });
+        }
+
+        if (heroShowLogin) {
+            heroShowLogin.addEventListener("click", function (event) {
+                event.preventDefault();
+                openLoginCard();
+            });
+        }
+
+        if (footerShowRegister) {
+            footerShowRegister.addEventListener("click", function (event) {
+                event.preventDefault();
+                openRegisterCard();
+            });
+        }
+
+        if (footerShowLogin) {
+            footerShowLogin.addEventListener("click", function (event) {
+                event.preventDefault();
+                openLoginCard();
+            });
+        }
+    </script>
+
+</body>
+
+</html>

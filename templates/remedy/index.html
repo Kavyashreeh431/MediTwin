@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{%load static%}
+{% block content %}
+<!-- Premium Google Fonts Integration for a Clean Tech Feel -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background-image: url("{% static 'images/bg.png' %}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    .ai-remedy-body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        /* background: radial-gradient(circle at top right, #eef2ff 0%, #f0fdfa 50%, #bef5d4 100%); */
+        min-height: 100vh;
+        color: #0f172a;
+    }
+    .glass-card {
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(46, 90, 68, 0.04);
+        transition: transform 0.2s ease;
+    }
+    .gradient-text {
+        background: linear-gradient(135deg, #3b82f6 0%, #0d9488 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .custom-textarea {
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease-in-out;
+        background: rgba(255, 255, 255, 0.5);
+    }
+    .custom-textarea:focus {
+        border-color: #0d9488;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
+        outline: none;
+    }
+    .gradient-btn {
+        background: linear-gradient(135deg, #5eca9b 0%,#06864c 0%, #5eca9b 90%);
+        border: none;
+        border-radius: 16px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+        opacity: 0.95;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.3);
+    }
+    .pulse-badge {
+        background: rgba(13, 148, 136, 0.1);
+        color: #0d9488;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #0d9488;
+        border-radius: 50%;
+        animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.5); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(13, 148, 136, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+    }
+    .content{
+       padding: 2% 18%;
+    }
+</style>
+
+<div class="ai-remedy-body py-5 d-flex align-items-center justify-content-center">
+    <div class="container px-3 mx-auto" style="max-width: 760px;">
+        
+        <!-- Header Branding Block -->
+        <div class="text-center mb-5">
+            <div class="pulse-badge mb-3">
+                <span class="pulse-dot"></span> Core MediTwin.ai Active
+            </div>
+            <h1 class="fw-bold display-6 tracking-tight mb-2">
+                <span class="gradient-text">Remedy Advisor</span>
+            </h1>
+            <p class="text-muted mx-auto mb-0" style="max-width: 480px; font-size: 0.95rem;">
+                Describe your symptoms naturally below for rapid triage insights.
+            </p>
+        </div>
+
+        <!-- Consultation Input Card -->
+        <div class="card glass-card shadow-lg border-0 p-4 p-md-5 mb-4 mx-auto w-100">
+            <form method="POST" novalidate class="w-100">
+                {% csrf_token %}
+                
+                <!-- Perfectly Aligned Label & Textarea Wrapper -->
+                <div class="d-flex flex-column align-items-start mb-4 w-100">
+                    <label class="form-label fw-bold text-secondary small text-uppercase tracking-wider m-0 p-0 mb-2" style="margin-left: 2%;">
+                        How are you feeling today?
+                    </label><br>
+                    <textarea style="margin: 10px; padding: 5px;"
+                        name="symptoms"
+                        class="form-control custom-textarea p-3 w-100 m-0"
+                        rows="6" cols="50"
+                        placeholder="Type symptoms (e.g., headache,cough)"
+                        style="box-sizing: border-color;"
+                        required
+                    >{{ symptoms|default:'' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary gradient-btn btn-lg w-100 py-3 shadow-sm text-center" style="padding: 10px; margin-left: 10px;">
+                    Analyze with AI Advisor
+                </button>
+            </form>
+        </div>
+
+        <!-- Diagnostic Output Area -->
+         
+        {% if symptoms %}
+        <div class="card glass-card shadow-lg border-0 p-4 p-md-5 mx-auto w-100">
+            
+            <div class="d-flex align-items-center justify-content-between border-bottom pb-3 mb-4">
+                <h4 class="fw-bold mb-0 text-dark" style="font-size: 1.15rem;">
+                    Analyzed Signals
+                </h4>
+                <!-- <span class="badge bg-light text-dark border px-2.5 py-1.5 rounded-3 fw-medium text-muted small">
+                    ID: #SYM-{{ symptoms|length }}
+                </span> -->
+            </div>
+
+            <!-- Patient Reports Block -->
+            <div class="d-flex flex-column align-items-start mb-4 w-100">
+                <!-- <div class="text-muted small text-uppercase tracking-wider fw-bold mb-2 m-0 p-0" style="font-size: 0.75rem;">
+                    Analyzed Signals
+                </div> -->
+                <div class="p-3 rounded-3 border-0 bg-dark bg-opacity-5 text-secondary fst-italic w-100" style="font-size: 0.95rem; box-sizing: border-box;">
+                    "{{ symptoms }}"
+                </div>
+            </div>
+
+            <!-- Diagnosis Dynamic Alert Box -->
+            <!-- <div class="d-flex flex-column align-items-start mb-4 w-100">
+                <div class="text-muted small text-uppercase tracking-wider fw-bold mb-2 m-0 p-0" style="font-size: 0.75rem;">
+                    Statistical Match Condition
+                </div>
+                <div class="p-4 rounded-4 w-100" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-left: 5px solid #10b981; box-sizing: border-box;">
+                    <div class="small text-success fw-bold text-uppercase tracking-wide mb-1" style="font-size: 0.7rem;">
+                        Top Likelihood Indicator
+                    </div> -->
+                    <h3 class="fw-bold mb-0" style="color: #065f46; font-size: 1.35rem;">Disease:
+                        {{disease }}
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Checklist Style Recommendations -->
+             <div class="blurred-section-wrapper p-3 rounded-4 w-100" style="background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px; border-radius: 20px;">
+            <div class="d-flex flex-column align-items-start mb-4 w-100">
+                <div class="text-muted small text-uppercase tracking-wider fw-bold mb-2 m-0 p-0" style="font-size: 0.75rem;">
+                    AI Suggested Protocol
+                </div>
+                <div class="p-3 rounded-4 bg-white border border-light w-100" style="box-sizing: border-box;">
+                    <ul class="list-unstyled mb-0 w-100">
+                        {% for item in recommendations %}
+                        <li class="d-flex align-items-center gap-3 py-2.5 w-100 {% if not forloop.last %}border-bottom border-light{% endif %}">
+                            <div class="d-flex align-items-center justify-content-center bg-teal rounded-circle text-success flex-shrink-0" style="width: 24px; height: 24px; background-color: #e6f4ea;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+                            <span class="text-dark fw-medium" style="font-size: 0.95rem;">{{ item }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted fst-italic py-2 w-100">General wellness protocols applied: Rest up and hydrate.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <h4>Confidence</h4>
+
+<div class="progress mb-3">
+
+<div
+class="progress-bar"
+
+style="
+width:
+{{ confidence }}%;
+">
+
+{{ confidence }}%
+
+</div>
+
+</div>
+
+
+<h4>Severity</h4>
+
+<span class="badge bg-danger">
+
+{{ severity }}
+
+</span>
+
+
+<h4 class="mt-4">
+
+Remedies
+
+</h4>
+
+<ul>
+
+{% for r in remedies %}
+
+<li>
+
+{{ r }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+
+<h4>
+
+Lifestyle Advice
+
+</h4>
+
+<ul>
+
+{% for a in advice %}
+
+<li>
+
+{{ a }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+            <!-- Triage Alert Banner -->
+            <div class="p-3 rounded-3 bg-warning bg-opacity-10 border border-warning border-opacity-20 mt-3 d-flex gap-2 align-items-start w-100" style="box-sizing: border-box;">
+                <span class="flex-shrink-0" style="font-size: 1.1rem; line-height: 1;">⚠️</span>
+                <p class="mb-0 text-warning-emphasis text-muted" style="font-size: 0.8rem; line-height: 1.45; text-align: left;">
+                    <strong>AI Safety Guidance:</strong> Our advisors pull matches from curated medical datasets. Machine classification models do not substitute an in-person diagnostic workup by licensed physicians. Seek immediate emergency medicine if warning conditions accelerate.
+                </p>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+</div>
+{% endblock %}
